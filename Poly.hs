@@ -40,19 +40,7 @@ data SimpleTerm where
 newtype PartialDerivitives = PD { unPD :: [ SimpleSum ]      } deriving Show
 newtype ConstantTerms      = CT { unCT :: [(String, Double)] } deriving Show
 
--- Display helpers for Simple Results
-
-showSS :: SimpleSum -> String
-showSS ss = intercalate " + " (map showSP $ unSS ss)
-
-showSP :: SimpleProduct -> String
-showSP sp = unwords (map showST $ unSP sp)
-
-showST :: SimpleTerm -> String
-showST (SimpleNumber n)   = show n
-showST (SimpleConstant c) = c
-
--- Program
+-- Functions
 
 expressionOrder :: Expression -> Int
 expressionOrder = length . distinct . variables
@@ -89,18 +77,6 @@ expression_sum = SS . concatMap unSS
 expression_product :: [SimpleSum] -> SimpleSum
 expression_product = SS . cpm . map unSS
 
-test1_data :: Expression
-test1_data = polynomial_of_order 3
-
-test2_data :: Expression
-test2_data = delta_squared_term test1_data
-
-test3_data :: SimpleSum
-test3_data = normal (Env [("x", 10), ("y", 20)]) test2_data
-
-test4_data :: PartialDerivitives
-test4_data = partial_derivatives 3 test3_data
-
 partial_derivatives :: Int -> SimpleSum -> PartialDerivitives
 partial_derivatives order ss = PD $ map (flip partial_derivative ss) constants
   where
@@ -117,19 +93,19 @@ groupLike :: [ SimpleProduct ] -> [ SimpleProduct ]
 groupLike = map merge
           . groupBy ((==) `on` extractConstants)
           . sortBy  (comparing extractConstants)
-  where
-    extractConstants :: SimpleProduct -> [ SimpleTerm ]
-    extractConstants (SP s) = sort $ filter (not . isNumeric) s
 
-    merge :: [SimpleProduct] -> SimpleProduct
-    merge []      = SP []
-    merge l@(x:_) = SP
-                  $ SimpleNumber (sum (concatMap (map toNum . unSP) l))
-                  : filter (not . isNumeric) (unSP x)
-      where
-        toNum :: SimpleTerm -> Double
-        toNum (SimpleNumber   n) = n
-        toNum (SimpleConstant _) = 0
+extractConstants :: SimpleProduct -> [ SimpleTerm ]
+extractConstants (SP s) = sort $ filter (not . isNumeric) s
+
+merge :: [SimpleProduct] -> SimpleProduct
+merge []      = SP []
+merge l@(x:_) = SP
+              $ SimpleNumber (sum (concatMap (map toNum . unSP) l))
+              : filter (not . isNumeric) (unSP x)
+  where
+    toNum :: SimpleTerm -> Double
+    toNum (SimpleNumber   n) = n
+    toNum (SimpleConstant _) = 0
 
 relevant :: String -> SimpleProduct -> Bool
 relevant s (SP sp) = SimpleConstant s `elem` sp
@@ -153,15 +129,6 @@ multiply (SP s) = let (ns,cs) = partition isNumeric s
 isNumeric :: SimpleTerm -> Bool
 isNumeric (SimpleNumber   _) = True
 isNumeric (SimpleConstant _) = False
-
-solve_linear :: PartialDerivitives -> ConstantTerms
-solve_linear = undefined
-
-reduce :: Int -> SimpleSum -> ConstantTerms
-reduce o s = solve_linear $ partial_derivatives o s
-
-solve_for_order :: Int -> Environment -> ConstantTerms
-solve_for_order o e = reduce o $ normal e (polynomial_of_order o)
 
 -- Library
 
