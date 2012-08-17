@@ -1,6 +1,7 @@
 module Test where
 
 import Poly
+import LinReg
 import Data.List
 import Text.Groom
 

@@ -40,6 +40,16 @@ data SimpleTerm where
 newtype PartialDerivitives = PD { unPD :: [ SimpleSum ]      } deriving Show
 newtype ConstantTerms      = CT { unCT :: [(String, Double)] } deriving Show
 
+-- Instances
+
+instance Monoid PartialDerivitives where
+  mappend (PD a) (PD b) = PD $ zipWith mappend a b
+  mempty                = PD $ repeat (SS [])
+
+instance Monoid SimpleSum where
+  mappend (SS a) (SS b) = SS $ a ++ b
+  mempty                = SS []
+
 -- Functions
 
 expressionOrder :: Expression -> Int
