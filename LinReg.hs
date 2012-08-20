@@ -1,6 +1,6 @@
 module LinReg (
 
-  lsr
+  lsr, bulkPDs
 
   ) where
 
@@ -12,8 +12,8 @@ import Control.Arrow
 
 type Data = [(Double,Double)]
 
-foo :: Int -> Data -> PartialDerivitives
-foo ord dat = pard
+bulkPDs :: Int -> Data -> PartialDerivitives
+bulkPDs ord dat = pard
   where
     poly = polynomial_of_order               ord
     dsqr = delta_squared_term                poly
