@@ -6,8 +6,6 @@ import Data.List
 import Text.Groom
 import Control.Arrow
 import System.Random
-import Data.Packed.Matrix
-import Numeric.LinearAlgebra.LAPACK
 
 -- Main test
 
@@ -40,16 +38,6 @@ showSP sp = unwords (map showST $ unSP sp)
 showST :: SimpleTerm -> String
 showST (SimpleNumber n)   = show n
 showST (SimpleConstant c) = c
-
--- Data Acquisition - Very unsafe
-
-getData :: PartialDerivitives -> ([[Double]], [Double])
-getData = (map tail &&& map (negate . head)) . fun
-  where
-    fun                         = map (map (getNums . unSP) . unSS) . unPD
-    getNums                     = foldl' getNum 1
-    getNum x (SimpleNumber   n) = n * x
-    getNum x (SimpleConstant _) = x
 
 -- Test Functions
 
@@ -95,10 +83,6 @@ test6 = do
   let order      = 5
       points     = take 100 randomData
       linear     = bulkPDs (order - 1) points
-      (lhs, rhs) = getData linear
-      coefs      = (order >< order) (concat lhs)
-      values     = (5     >< 1    )  rhs
-      -- points     = map (id &&& id) [0..10]
 
   putStrLn ""
   putStrLn "Order:"
@@ -114,5 +98,5 @@ test6 = do
   putStrLn ""
 
   putStrLn "Solved System:"
-  print $ linearSolveR coefs values
+  mapM_ print $ lsr order points
   putStrLn ""
