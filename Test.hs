@@ -25,7 +25,7 @@ functionData :: [Double] -> [(Double, Double)]
 functionData constants = map (id &&& f) [0..]
   where
     f x = sum $ zipWith (*) (g x) constants
-    g x = zipWith (**) (repeat x) [0..]
+    g x = map (x**) [0..]
 
 -- Show Functions
 
