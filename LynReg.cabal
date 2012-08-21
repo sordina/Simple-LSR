@@ -2,20 +2,17 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                LynReg
-version:             0.1.0.0
+version:             0.1.0.1
 synopsis:            A simple LeastSquaresRegression tool
--- description:         
 homepage:            https://github.com/sordina/Simple-LSR
 license:             BSD3
 license-file:        LICENSE
 author:              Lyndon Maydwell
 maintainer:          maydwell@gmail.com
--- copyright:           
 category:            Math
 build-type:          Simple
 cabal-version:       >=1.8
 
 library
   exposed-modules:     LinReg, Poly
-  -- other-modules:       
-  build-depends:       base ==4.5.*, hmatrix ==0.14.*, groom ==0.1.*, random ==1.0.*
+  build-depends:       base, hmatrix, groom, random
