@@ -17,12 +17,12 @@ main = test6
 annealedData :: [Double] -> IO [(Double, Double)]
 annealedData constants = do
   gen <- newStdGen
-  return $ zipWith f (randomRs (0,1) gen) (testFunctionData constants)
+  return $ zipWith f (randomRs (0,1) gen) (functionData constants)
 
   where f a (x,y) = (x, a+y-0.5)
 
-testFunctionData :: [Double] -> [(Double, Double)]
-testFunctionData constants = map (id &&& f) [0..]
+functionData :: [Double] -> [(Double, Double)]
+functionData constants = map (id &&& f) [0..]
   where
     f x = sum $ zipWith (*) (g x) constants
     g x = zipWith (**) (repeat x) [0..]
