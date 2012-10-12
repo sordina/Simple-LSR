@@ -4,6 +4,7 @@ Takes input in the form of
 
 ```haskell
 
+--     T   -> U                 -> V
 lsr :: Int -> [(Double,Double)] -> [Double]
 
 ```
